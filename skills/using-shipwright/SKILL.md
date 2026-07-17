@@ -15,6 +15,21 @@ applies to what you're doing, invoke it. This is not negotiable.
 
 ## Required Skill Invocations
 
+These moments require invoking a specific `superpowers` skill — no
+exceptions:
+
+| Skill | Invoke when |
+|---|---|
+| `superpowers:brainstorming` | Before any new feature, significant code change, or design decision. No code is written until a design is presented and approved. |
+| `superpowers:verification-before-completion` | Before claiming any task is complete, before stating tests pass, and before creating a commit or PR. |
+| `superpowers:systematic-debugging` | Before attempting to fix any bug, test failure, or unexpected behaviour. Root cause first, fix second. |
+| `superpowers:test-driven-development` | Before writing any implementation code for a feature or bugfix — write the failing test first. |
+| `superpowers:finishing-a-development-branch` | After all implementation tasks are complete and verified, before merging/pushing — structures the merge/PR/cleanup decision. |
+| `superpowers:requesting-code-review` | Before merging any feature branch — dispatches a fresh subagent reviewer with no session history for unbiased review. |
+| `superpowers:receiving-code-review` | When receiving code review feedback — verify technically before implementing; never agree blindly. |
+
+And these moments require invoking a `shipwright` skill:
+
 | Skill | Invoke when |
 |---|---|
 | `shipwright:quality-gates` | Before every commit (bronze gate) and before every merge to `master`/`main` (silver gate). |
@@ -23,9 +38,6 @@ applies to what you're doing, invoke it. This is not negotiable.
 | `shipwright:tool-preferences` | Before choosing which tool to use for code navigation, review, or library documentation. |
 | `shipwright:python-guidelines` | Before writing or reviewing Python code. |
 | `shipwright:typescript-guidelines` | Before writing or reviewing TypeScript code. |
-
-These are in addition to — not instead of — the required-invocation table in
-`superpowers:using-superpowers`.
 
 ## Check Before You Build
 

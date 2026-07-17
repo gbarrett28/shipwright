@@ -70,4 +70,5 @@ or plan file with unchecked steps remains.
 |---|---|---|
 | Spec | `docs/specs/` or `docs/superpowers/specs/` | Deleted once incorporated into a live doc |
 | Plan | `docs/plans/` or `docs/superpowers/plans/` | Deleted once every step is ticked |
+| Session plan | `~/.claude/plans/` (Claude Code's own session-scoped plan directory) | Session-scoped plans created by the agent during work — check here too during the silver-gate sweep |
 | Live doc | project-specific | Permanent; always reflects the current codebase |
