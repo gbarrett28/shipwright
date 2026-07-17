@@ -1,0 +1,146 @@
+# Design
+
+## Why this exists
+
+`shipwright` was extracted from a single project's `CLAUDE.md`
+(`killer_sudoku`), which had accumulated two kinds of content: process rules
+that had nothing to do with that project's domain (which skill to invoke
+and when, the two-tier quality-gate pattern, branch/doc/commit conventions,
+even language coding guidelines), and genuinely project-specific
+configuration (what the codebase is, domain conventions, concrete tool
+wiring). When a second, unrelated project started, the choice was between
+copy-pasting the methodology prose into a new `CLAUDE.md` and letting the
+two drift, or extracting it once into something both projects — and any
+future one — install and reference. `shipwright` is that extraction,
+packaged as a standalone Claude Code plugin rather than a shared file,
+specifically so it can be versioned, installed via the normal plugin
+mechanism, and opened to outside collaborators.
+
+## Structure
+
+A single-plugin marketplace repo, matching the shape of `superpowers` and
+`pr-review-toolkit`:
+
+```
+shipwright/
+  .claude-plugin/
+    marketplace.json   # lists this repo as a marketplace with one plugin: shipwright
+    plugin.json         # plugin manifest (name, version, description)
+  .claude/
+    settings.json        # self-referential install config (see "Dogfooding" below)
+  skills/
+    using-shipwright/SKILL.md
+    quality-gates/SKILL.md
+    commit-and-test-integrity/SKILL.md
+    issue-hygiene/SKILL.md
+    tool-preferences/SKILL.md
+    python-guidelines/SKILL.md
+    typescript-guidelines/SKILL.md
+  CLAUDE.md             # skill-authoring process for contributors
+  README.md
+```
+
+Consuming projects install it via the standard plugin flow
+(`/plugin marketplace add` + `/plugin install shipwright@shipwright`), or —
+for portability across clones — by committing an `extraKnownMarketplaces` +
+`enabledPlugins` block in their own `.claude/settings.json` pointing at the
+GitHub source, the same way this repo does for itself.
+
+## The seven skills
+
+Each skill was assigned a testing tier during brainstorming, before being
+written, because the tier determines how much pressure-testing rigor it
+needs (see "Testing methodology" below):
+
+| Skill | Tier | Covers |
+|---|---|---|
+| `using-shipwright` | Discipline-enforcing | Required-skill-invocation table for the other six skills; the "Check Before You Build" rule (search skills/plugins/prior work before building from scratch — see below); token-efficiency and plan-sprint-size guidance; the git-worktree caveat |
+| `quality-gates` | Discipline-enforcing | The bronze/silver two-tier gate contract; keeping newly-written TDD tests inside the bronze run without gaming the fast-subset tag; the bronze/silver split of doc-hygiene checks |
+| `commit-and-test-integrity` | Discipline-enforcing | Conventional Commits; confirm-before-deleting-uncommitted-work; tests-define-the-spec (a failing test means suspect the implementation first, never silently edit the test) |
+| `issue-hygiene` | Pattern | Tracker-agnostic issue hygiene: search-before-create, link commits/PRs to issues, real closure reasons, keep descriptions current |
+| `tool-preferences` | Pattern | Prefer semantic code-navigation, specialized review agents, and up-to-date library docs over generic tools/training data, when installed — with an explicit non-silent fallback rule |
+| `python-guidelines` | Reference | Strict ruff/mypy rules, no inline `noqa`/`type: ignore`, the safe-then-unsafe auto-fix workflow |
+| `typescript-guidelines` | Reference | Safety-by-construction philosophy, the namespace-merging pattern for discriminated unions, type safety, code hygiene, error handling |
+
+`python-guidelines` and `typescript-guidelines` are extracted near-verbatim
+from `killer_sudoku`'s enforced conventions (the one adaptation:
+TypeScript's "before removing code" rule was generalized from a
+serena-specific instruction to "a reference-finding tool (e.g. serena's
+`find_referencing_symbols`, or your language server's find-references)",
+since this skill has to work for projects without serena installed).
+`issue-hygiene` is net-new — `killer_sudoku` had no issue-tracker
+conventions to extract from.
+
+## Testing methodology
+
+Skill-authoring here follows `superpowers:writing-skills`'s TDD-for-docs
+model: a skill isn't written until a baseline (RED) test shows what an
+agent does *without* it, then the skill is written to address that gap
+(GREEN), then re-verified. Rigor scales by tier:
+
+- **Discipline-enforcing** skills got full RED-GREEN pressure-scenario
+  testing via the `Agent` tool — a realistic scenario combining time
+  pressure, sunk cost, and a plausible-sounding rationalization, run once
+  without the skill and once with it.
+- **Pattern/reference** skills got lighter application/retrieval-scenario
+  testing — a single realistic question per skill, run together in one
+  subagent call, checking the answer applies the rule correctly.
+
+Two things fell out of that process worth recording as design decisions,
+not just history:
+
+1. **The RED tests for `quality-gates` and `commit-and-test-integrity`
+   found no baseline failures.** Subagents dispatched from within the
+   `killer_sudoku` session inherit its `CLAUDE.md` as ambient context
+   regardless of prompt framing, and — since the equivalent rules hadn't
+   been stripped out of `killer_sudoku`'s `CLAUDE.md` yet — those subagents
+   already had the real rule available and applied it correctly. Rather
+   than invent rationalization-table entries for failures that didn't
+   occur (which `writing-skills` explicitly warns against), those skills
+   ship as accurate reference content plus whatever narrower claims *did*
+   fail testing.
+2. **`using-shipwright`'s "Check Before You Build" section exists because
+   of a real failure, not a hypothetical one.** While building this very
+   plugin, a session went straight into hand-drafting all seven `SKILL.md`
+   files from scratch despite `superpowers:writing-skills` (and a separate
+   `skill-creator` plugin) being installed and directly on-point — caught
+   only because the user asked whether such a skill existed, not because
+   the agent checked proactively. That's documented verbatim in the skill
+   itself as the concrete example the rule exists to prevent.
+
+## Versioning
+
+`version` in `.claude-plugin/plugin.json` and the matching entry in
+`.claude-plugin/marketplace.json` moves together: `0.1.0` at scaffold,
+`0.2.0` after `using-shipwright` + `quality-gates`, `0.3.0` after
+`commit-and-test-integrity`, `0.4.0` after the remaining four skills
+shipped as one batch. Consuming projects pin to the marketplace, not a
+specific version, so a real behavior change without a version bump is
+invisible to them — every skill addition gets at least a minor bump.
+
+## Dogfooding
+
+This repo's own `.claude/settings.json` registers and enables `shipwright`
+for itself via the GitHub source (not the local directory path used during
+initial development, which isn't portable to a fresh clone). Without this,
+contributors working on `shipwright` would be following its own rules from
+memory rather than through genuine skill invocation — which is exactly what
+happened during initial development, before this was set up.
+
+## Deliberately out of scope
+
+- **No bronze/silver gate script or CI for this repo.** `shipwright` is
+  markdown and JSON, not application code with an automated test suite;
+  skill correctness is verified through the RED-GREEN-REFACTOR process
+  above, not a script. `CLAUDE.md` states this explicitly so it doesn't
+  read as an oversight.
+- **No branch/PR workflow yet.** All commits through `v0.4.0` went directly
+  to `main` — this is solo bootstrapping, not the intended long-term
+  pattern. `CLAUDE.md` already asks that significant additions be
+  discussed in an issue before a PR once there are outside contributors.
+- **An `html-css-guidelines` skill** was considered and deferred: unlike
+  the Python/TypeScript guidelines, there was no existing enforced
+  HTML/CSS convention to extract from, and inventing one with no proven
+  usage risks baking untested preferences into a shared plugin. Add it if
+  a project surfaces real, already-enforced conventions worth
+  generalizing.

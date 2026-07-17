@@ -19,6 +19,12 @@ See `skills/` — one directory per skill, each a `SKILL.md`. Start with
 `skills/using-shipwright/SKILL.md`, which explains when each of the other
 skills applies.
 
+## Design
+
+See [`docs/design.md`](docs/design.md) for why this exists, what each
+skill covers, the testing methodology, and what's deliberately out of
+scope.
+
 ## Contributing
 
 See `CLAUDE.md` for the skill-authoring process (this repo is written and
