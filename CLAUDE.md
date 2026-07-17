@@ -70,5 +70,8 @@ This repo is public specifically to take outside contributions. Significant
 additions (a new skill, a new discipline tier) should be discussed in an
 issue before a PR, per `shipwright:issue-hygiene`. Commits follow
 `shipwright:commit-and-test-integrity`'s Conventional Commits convention.
-(Both of those skills ship in Sprint 2 — bootstrap manually with the same
-conventions before then: Conventional Commits, discuss-before-PR.)
+
+**AI attribution policy for this repo:** `shipwright:commit-and-test-integrity`
+leaves the `Co-Authored-By` trailer as a project-by-project policy decision
+rather than a blanket default. This repo's policy: include it. All commits
+to date have, and that's the expectation going forward.

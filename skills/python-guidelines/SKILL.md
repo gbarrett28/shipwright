@@ -5,26 +5,37 @@ description: Use before writing or reviewing Python code — covers strict ruff/
 
 # Python Coding Guidelines
 
+## Philosophy
+
+Prefer designs that let Ruff and mypy prove correctness rather than
+requiring human discipline to remember the rule every time. Everything
+below follows from that: tooling catches what memory won't.
+
 ## Linting and Type Checking
 
-Python code is checked at every bronze gate with:
+Run the project's configured linter and type checker at every bronze gate
+— for example:
 
 ```bash
 python -m ruff check .          # enforced in CI and pre-commit
 python -m mypy . --ignore-missing-imports
 ```
 
+(The exact commands are this project's config; the requirement is that
+*some* strict linter and type checker run every bronze gate, not these
+specific invocations.)
+
 **Rules:**
 
 - **ruff** — strict extended rule-set (see `[tool.ruff]` in `pyproject.toml`). Zero tolerance.
-- **mypy** — `strict = true`. All public functions require full type annotations.
+- **mypy** — run in strict mode, so the type checker itself enforces full annotation coverage on public functions rather than relying on reviewers to notice a missing one.
 - **No `#noqa`** — never add inline `# noqa: …` comments. Fix the violation or add a `per-file-ignores` entry with a comment explaining why.
 - **No inline `# type: ignore`** — use `cast()`, fix the stub, or add a `per-file-ignores` entry instead.
 - **Stubs for missing third-party types** — create `stubs/<pkg>/` with `.pyi` files rather than adding `# type: ignore[import-untyped]` per-import.
 
 ## Auto-fix Workflow
 
-Before manually fixing violations, always try auto-fix first:
+Before manually fixing violations, always try auto-fix first — for example:
 
 ```bash
 # 1. Safe fixes only (always run first)

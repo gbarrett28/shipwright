@@ -50,7 +50,20 @@ GitHub source, the same way this repo does for itself.
 
 Each skill was assigned a testing tier during brainstorming, before being
 written, because the tier determines how much pressure-testing rigor it
-needs (see "Testing methodology" below):
+needs (see "Testing methodology" below). The tiers describe different
+*kinds* of guidance, not just different rigor levels:
+
+- **Discipline-enforcing** skills govern behavior — a rule the agent must
+  keep following even under time pressure, sunk cost, or a plausible-
+  sounding rationalization. These are the ones tested adversarially,
+  because that's the failure mode they exist to resist.
+- **Pattern** skills encode a reusable engineering approach — a way of
+  thinking about a class of problem, applied per situation rather than
+  followed as a strict rule under pressure.
+- **Reference** skills capture mature, already-proven project conventions —
+  what to do, not a discipline to defend. Extracted from real enforced
+  practice, not invented preferences (see the language-skill inclusion
+  criterion below).
 
 | Skill | Tier | Covers |
 |---|---|---|
@@ -70,6 +83,18 @@ serena-specific instruction to "a reference-finding tool (e.g. serena's
 since this skill has to work for projects without serena installed).
 `issue-hygiene` is net-new — `killer_sudoku` had no issue-tracker
 conventions to extract from.
+
+**Language-skill inclusion criterion, stated explicitly:** a language gets
+a `*-guidelines` skill because a real project's already-enforced
+conventions were extracted into it — not because the language is popular
+or because someone had opinions about it. Python and TypeScript are the
+only two languages covered because those are the only two this repository
+has actually extracted from so far. The absence of a `rust-guidelines` or
+`go-guidelines` is not a judgment about those languages — it just means
+nobody has extracted one yet. Adding one requires the same bar: a real,
+already-enforced project convention to extract, not an invented style
+guide (see the deferred `html-css-guidelines` skill below for a case where
+this bar wasn't met and the skill was skipped as a result).
 
 ## Testing methodology
 
@@ -114,7 +139,13 @@ not just history:
 `.claude-plugin/marketplace.json` moves together: `0.1.0` at scaffold,
 `0.2.0` after `using-shipwright` + `quality-gates`, `0.3.0` after
 `commit-and-test-integrity`, `0.4.0` after the remaining four skills
-shipped as one batch. Consuming projects pin to the marketplace, not a
+shipped as one batch, `0.4.1` for a content-completeness fix (the
+superpowers required-invocation table and a missing doc-convention row),
+`0.5.0` for a round of external-review-driven refinements (new rules in
+`issue-hygiene`/`tool-preferences`, the AI-attribution policy softened
+from mandatory to project-configurable, wording clarifications across
+`quality-gates`/`python-guidelines`). Consuming projects pin to the
+marketplace, not a
 specific version, so a real behavior change without a version bump is
 invisible to them — every skill addition gets at least a minor bump.
 

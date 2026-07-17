@@ -33,3 +33,8 @@ reach it; this skill states the policy.
   Issues track work that isn't actionable *right now*; filing one for a bug
   you're about to fix in the current change is process theater, not
   hygiene.
+- **Close only when the observable behavior is fixed, not when a suspected
+  cause changed.** "I refactored the thing that seemed responsible" is not
+  the same claim as "the bug is gone" — verify the user-facing symptom
+  before closing, or the issue reopens later with nobody sure why it was
+  ever marked done.

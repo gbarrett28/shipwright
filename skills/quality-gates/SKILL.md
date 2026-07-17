@@ -12,6 +12,10 @@ commit) and silver (thorough, every merge). Each project supplies its own
 gate scripts implementing the checks for its stack; this skill is the
 contract both scripts must satisfy, not the concrete commands.
 
+**Bronze exists to maximise feedback frequency. Silver exists to maximise
+confidence.** Every rule below follows from keeping those two goals
+separate rather than compromising between them.
+
 ## The Contract
 
 **Bronze gate** — runs before every commit on a feature branch.
@@ -30,17 +34,19 @@ contract both scripts must satisfy, not the concrete commands.
 ## New tests belong in bronze — don't game the fast-subset tag
 
 Tests written via `superpowers:test-driven-development` must be added to
-the bronze gate's test run. Bronze's total runtime must also stay under 5
-minutes. Reconcile these by keeping tests fast by default (no real I/O, no
-sleeps, no slow fixtures) — a suite of a few hundred fast unit tests
-comfortably fits the budget.
+the bronze gate's test run. Bronze's total runtime must also stay within a
+project-defined latency budget (typically under five minutes — the number
+itself is a project decision, not a Shipwright mandate; what's fixed is
+that a budget exists and is enforced). Reconcile these by keeping tests
+fast by default (no real I/O, no sleeps, no slow fixtures) — a suite of a
+few hundred fast unit tests comfortably fits a five-minute budget.
 
 Only tag a test as slow/excluded from bronze if it is genuinely slow (real
 integration I/O, browser automation, etc.) and defer it to silver. Tagging
 a fast test as slow "just to be safe" or "to keep bronze snappy" satisfies
 the letter of "bronze stays fast" while violating the rule that new tests
 belong in bronze — the fast-subset tag is for tests that are actually slow,
-not a blanket default. If bronze's runtime approaches the 5-minute ceiling
+not a blanket default. If bronze's runtime approaches the budget's ceiling
 as the suite grows, that's a signal to tag genuinely slow tests or optimize
 fixtures — never to preemptively exclude a fast test.
 
@@ -53,16 +59,20 @@ commit; silver gates every commit to `master`/`main`, including merges.
 ## Doc Hygiene: Bronze vs Silver
 
 **Bronze** (manual, per-commit, not scripted, doesn't count against the
-5-minute budget): any plan file touched by this commit's work must have
+latency budget): any plan file touched by this commit's work must have
 accurate checkboxes — completed steps ticked, incomplete steps not. Only
 plans/specs relevant to the current commit, not a repo-wide sweep. Don't
 commit if a touched plan's checkboxes are inaccurate.
 
 **Silver** (manual, pre-merge, thorough): sweep every spec/plan location in
 the repo. Finished specs: incorporate their design into the relevant live
-doc with concrete descriptions of what was built, then delete the spec
-file. Finished plans (every step ticked): delete. Don't merge if any spec
-or plan file with unchecked steps remains.
+doc with concrete descriptions of what was built, then archive or delete
+the spec file per project policy (default: delete — some projects
+intentionally retain design documents as historical record; state the
+override in the project's own CLAUDE.md if so). Finished plans (every step
+ticked): archive or delete per the same policy. Don't merge if any spec or
+plan file with unchecked steps remains, regardless of archive/delete
+policy.
 
 ## Doc Conventions (default locations, overridable per project)
 

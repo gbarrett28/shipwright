@@ -21,6 +21,12 @@ states the preference order and fallback behavior.
   `coderabbit`) over ad hoc manual review when installed.
 - **Prefer up-to-date library-documentation tools** (e.g. `context7`) over
   training-data knowledge for external library/API usage, when installed.
+- **Prefer project-specific automation over manually reproducing its
+  behavior** — existing build scripts, project generators, migration
+  tools, codegen — rather than hand-writing what one of those would do for
+  you. Consistent with `shipwright:using-shipwright`'s "Check Before You
+  Build": the automation already encodes the correct behavior; reproducing
+  it by hand risks drifting from it.
 
 ## Fallback behavior
 

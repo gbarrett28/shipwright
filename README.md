@@ -4,6 +4,17 @@ Reusable Claude Code engineering-methodology skills — quality gates,
 commit/issue/doc hygiene, tool preferences, and language guidelines — as a
 versioned, installable plugin.
 
+Most guidance repositories end up either too generic ("best practices") or
+too tied to one project's specifics. Shipwright tries to thread that
+needle: every rule here was extracted from a real, already-enforced
+project convention, states the *invariant* rather than the concrete
+command, and explains the failure mode it exists to prevent rather than
+just asserting the rule. A representative example, from
+`commit-and-test-integrity`: *"Confidence that your implementation is
+right is not the same as having checked."* That's the style of reasoning
+every skill in this repo aims for. See [`docs/design.md`](docs/design.md)
+for the full rationale.
+
 ## Install
 
 ```

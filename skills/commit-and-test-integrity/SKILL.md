@@ -10,12 +10,17 @@ description: Use when writing a commit message, when about to delete or change a
 - Follow Conventional Commits format: `feat:`, `fix:`, `chore:`, `docs:`,
   `refactor:`, `test:`.
 - Write clear, descriptive commit messages focused on *why*, not *what*.
-- Add a Co-Authored-By tag when AI-assisted:
-  ```
-  Co-Authored-By: <model name> <noreply@anthropic.com>
-  ```
 - **Always confirm before deleting or changing anything that is not
   committed to git.**
+
+### AI attribution
+
+Whether AI-assisted commits carry an attribution trailer (e.g.
+`Co-Authored-By: <model name> <noreply@anthropic.com>`) is a project/org
+policy decision, not a Shipwright mandate — some organizations require it,
+some prohibit it, most don't have a policy at all. Follow the project's own
+CLAUDE.md if it states one; if it's silent, ask rather than assuming either
+default.
 
 ## Test Specification Integrity
 
