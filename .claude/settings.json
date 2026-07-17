@@ -1,0 +1,13 @@
+{
+  "enabledPlugins": {
+    "shipwright@shipwright": true
+  },
+  "extraKnownMarketplaces": {
+    "shipwright": {
+      "source": {
+        "source": "github",
+        "repo": "gbarrett28/shipwright"
+      }
+    }
+  }
+}
