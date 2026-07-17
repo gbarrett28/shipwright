@@ -5,6 +5,9 @@ description: Use before writing or reviewing Python code — covers strict ruff/
 
 # Python Coding Guidelines
 
+**REQUIRED BACKGROUND:** `shipwright:engineering-principles` — this skill
+is Python's instantiation of those language-agnostic principles.
+
 ## Philosophy
 
 Prefer designs that let Ruff and mypy prove correctness rather than
@@ -14,7 +17,8 @@ below follows from that: tooling catches what memory won't.
 ## Linting and Type Checking
 
 Run the project's configured linter and type checker at every bronze gate
-— for example:
+(this project's instance of *use the project's configured analysis tools
+rather than bypassing them*) — for example:
 
 ```bash
 python -m ruff check .          # enforced in CI and pre-commit
@@ -29,7 +33,7 @@ specific invocations.)
 
 - **ruff** — strict extended rule-set (see `[tool.ruff]` in `pyproject.toml`). Zero tolerance.
 - **mypy** — run in strict mode, so the type checker itself enforces full annotation coverage on public functions rather than relying on reviewers to notice a missing one.
-- **No `#noqa`** — never add inline `# noqa: …` comments. Fix the violation or add a `per-file-ignores` entry with a comment explaining why.
+- **No `#noqa`** — never add inline `# noqa: …` comments. Fix the violation or add a `per-file-ignores` entry with a comment explaining why (*prefer structural fixes over local suppressions*; *make exceptions explicit and centrally documented*).
 - **No inline `# type: ignore`** — use `cast()`, fix the stub, or add a `per-file-ignores` entry instead.
 - **Stubs for missing third-party types** — create `stubs/<pkg>/` with `.pyi` files rather than adding `# type: ignore[import-untyped]` per-import.
 
@@ -45,6 +49,8 @@ python -m ruff check --fix .
 python -m ruff check --unsafe-fixes --fix .
 git diff                         # review every change before git add
 ```
+
+(*Review every automated transformation before committing it.*)
 
 The `--unsafe-fixes` flag enables transforms that could alter runtime behaviour
 (e.g. `try/except/pass` → `contextlib.suppress`, nested `if` → single `and`).

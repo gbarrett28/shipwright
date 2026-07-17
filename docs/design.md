@@ -46,7 +46,7 @@ for portability across clones — by committing an `extraKnownMarketplaces` +
 `enabledPlugins` block in their own `.claude/settings.json` pointing at the
 GitHub source, the same way this repo does for itself.
 
-## The seven skills
+## The eight skills
 
 Each skill was assigned a testing tier during brainstorming, before being
 written, because the tier determines how much pressure-testing rigor it
@@ -72,8 +72,9 @@ needs (see "Testing methodology" below). The tiers describe different
 | `commit-and-test-integrity` | Discipline-enforcing | Conventional Commits; confirm-before-deleting-uncommitted-work; tests-define-the-spec (a failing test means suspect the implementation first, never silently edit the test) |
 | `issue-hygiene` | Pattern | Tracker-agnostic issue hygiene: search-before-create, link commits/PRs to issues, real closure reasons, keep descriptions current |
 | `tool-preferences` | Pattern | Prefer semantic code-navigation, specialized review agents, and up-to-date library docs over generic tools/training data, when installed — with an explicit non-silent fallback rule |
+| `engineering-principles` | Reference | The five language-agnostic principles both language skills instantiate: structural fixes over suppressions, static over runtime guarantees, centralized/explicit exceptions, review automated transformations, use configured tools rather than bypassing them |
 | `python-guidelines` | Reference | Strict ruff/mypy rules, no inline `noqa`/`type: ignore`, the safe-then-unsafe auto-fix workflow |
-| `typescript-guidelines` | Reference | Safety-by-construction philosophy, the namespace-merging pattern for discriminated unions, type safety, code hygiene, error handling |
+| `typescript-guidelines` | Reference | Safety-by-construction philosophy, the namespace-merging pattern for discriminated unions, type safety, code hygiene, error handling, tooling (added alongside `engineering-principles` — see below) |
 
 `python-guidelines` and `typescript-guidelines` are extracted near-verbatim
 from `killer_sudoku`'s enforced conventions (the one adaptation:
@@ -83,6 +84,26 @@ serena-specific instruction to "a reference-finding tool (e.g. serena's
 since this skill has to work for projects without serena installed).
 `issue-hygiene` is net-new — `killer_sudoku` had no issue-tracker
 conventions to extract from.
+
+**`engineering-principles` exists because comparing the two language
+skills against each other found a real gap, not just duplication.**
+An external review flagged that `python-guidelines` and
+`typescript-guidelines` encode overlapping ideas in language-specific
+vocabulary. Checking that against the actual text found something sharper
+than redundancy: two principles — "review every automated transformation
+before committing" and "use the project's configured tools rather than
+bypassing them" — existed in `python-guidelines` and were simply absent
+from `typescript-guidelines`, along with no TypeScript equivalent of "no
+`#noqa`" for `@ts-ignore`/`eslint-disable`. Not because those ideas don't
+apply to TypeScript — ESLint autofixes and IDE refactors carry the same
+risk `ruff --fix` does — but because nobody had checked the two skills
+against a shared list before. `engineering-principles` states the five
+principles once; `python-guidelines` and `typescript-guidelines` each
+cite it via `REQUIRED BACKGROUND` and note which of their rules
+instantiate which principle. Verified with a retrieval/application
+scenario deliberately run against Rust — a language neither skill covers —
+to confirm the principles generalize past the two languages they were
+extracted from, not just describe them after the fact.
 
 **Language-skill inclusion criterion, stated explicitly:** a language gets
 a `*-guidelines` skill because a real project's already-enforced
@@ -144,7 +165,10 @@ superpowers required-invocation table and a missing doc-convention row),
 `0.5.0` for a round of external-review-driven refinements (new rules in
 `issue-hygiene`/`tool-preferences`, the AI-attribution policy softened
 from mandatory to project-configurable, wording clarifications across
-`quality-gates`/`python-guidelines`). Consuming projects pin to the
+`quality-gates`/`python-guidelines`), `0.6.0` for the new
+`engineering-principles` skill plus the TypeScript gap it found (tooling
+and suppression-discipline rules added to `typescript-guidelines`).
+Consuming projects pin to the
 marketplace, not a
 specific version, so a real behavior change without a version bump is
 invisible to them — every skill addition gets at least a minor bump.

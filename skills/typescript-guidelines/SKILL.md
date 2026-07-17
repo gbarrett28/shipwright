@@ -5,9 +5,12 @@ description: Use before writing or reviewing TypeScript code — covers safety-b
 
 # TypeScript Coding Guidelines
 
+**REQUIRED BACKGROUND:** `shipwright:engineering-principles` — this skill
+is TypeScript's instantiation of those language-agnostic principles.
+
 ## Design Philosophy: Safety By Construction
 
-**Core principle:** Prefer language features and structures that make errors **impossible** rather than just **unlikely**.
+**Core principle:** Prefer language features and structures that make errors **impossible** rather than just **unlikely**. (*Prefer static guarantees over runtime checks.*)
 
 - **Type system:** Make invalid states unrepresentable through strong typing; prefer `readonly` arrays and tuples
 - **Iteration:** Use `for...of` and destructuring to couple related variables; avoid raw index loops unless necessary
@@ -81,8 +84,27 @@ If code elsewhere maintains a `Set<string>` or `string[]` to track which variant
 
 - Always use the strongest possible return type annotation
 - Always use the weakest possible parameter type annotation
-- Never use `any` unless the object truly can be anything at runtime
+- Never use `any` unless the object truly can be anything at runtime (*prefer static guarantees over runtime checks*)
 - Prefer `unknown` over `any` for external data; narrow explicitly
+- Avoid silencing the compiler or linter with inline suppressions
+  (`@ts-ignore`, `@ts-expect-error` used to hide a real bug rather than
+  document a known, temporary limitation, `// eslint-disable-next-line`)
+  — fix the underlying type/lint issue, or narrow the suppression to a
+  documented, reviewable exception (*prefer structural fixes over local
+  suppressions*; *make exceptions explicit and centrally documented*).
+
+## Tooling
+
+- Run the project's configured linter (e.g. ESLint) and `tsc` at every
+  bronze gate — don't route around them with inline disables instead of
+  fixing the config when a rule is genuinely wrong for a case (*use the
+  project's configured analysis tools rather than bypassing them*).
+- Review the diff from any automated transformation — `eslint --fix`,
+  a formatter, an IDE "Organize Imports," a TypeScript-service refactor —
+  before committing it. These can change semantics (import reordering
+  shifting side-effect timing, an auto-inserted assertion masking a real
+  type error) just as much as any Python autofixer can (*review every
+  automated transformation before committing it*).
 
 ## Code Hygiene
 
