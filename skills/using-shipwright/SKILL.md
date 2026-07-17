@@ -129,3 +129,24 @@ code bug but are actually a missing-file problem. (This doesn't apply to
 isolation mechanisms your harness manages itself, e.g. background-job
 worktree isolation — that's a runtime concern, not a project workflow
 choice.)
+
+If a project genuinely needs worktree support (parallel agent-driven
+development is the usual reason), the caution above is addressable,
+not absolute — it names a project that relies on untracked, manually-
+built local state, and that reliance can be removed:
+
+- A lockfile-based dependency manager (e.g. `uv` with `uv.lock`) plus a
+  bootstrap script that takes a bare worktree to a working dev
+  environment in one command, so "install deps" is never tribal
+  knowledge that only happened once in the main checkout.
+- `.claude/settings.json`'s `worktree.symlinkDirectories` setting can
+  share a directory (e.g. a venv) across worktrees instead of paying to
+  reinstall it in every one — an alternative to a from-scratch bootstrap
+  when reinstalling is slow.
+- No fixture data tests depend on may live only as gitignored local
+  files — track it in git (or generate it via the bootstrap step), or
+  a fresh worktree won't have it.
+- Record the override explicitly in the project's own `CLAUDE.md`: state
+  that it diverges from shipwright's default caution, and name which of
+  the above makes that safe, so the decision stays legible to future
+  sessions instead of silently drifting from shipwright's stated default.
