@@ -1,6 +1,6 @@
 ---
 name: typescript-guidelines
-description: Use before writing or reviewing TypeScript code — covers safety-by-construction philosophy, the namespace-merging pattern for discriminated unions (vs bare unions), type-safety rules, code hygiene, and error-handling rules.
+description: Use before writing or reviewing TypeScript code — covers safety-by-construction philosophy, the namespace-merging pattern for discriminated unions (vs bare unions), type-safety rules, code hygiene, error-handling rules, and preferring iteration/array methods over index-based access.
 ---
 
 # TypeScript Coding Guidelines
@@ -13,9 +13,35 @@ is TypeScript's instantiation of those language-agnostic principles.
 **Core principle:** Prefer language features and structures that make errors **impossible** rather than just **unlikely**. (*Prefer static guarantees over runtime checks.*)
 
 - **Type system:** Make invalid states unrepresentable through strong typing; prefer `readonly` arrays and tuples
-- **Iteration:** Use `for...of` and destructuring to couple related variables; avoid raw index loops unless necessary
 - **Configuration:** Single source of truth — no magic numbers scattered through code
 - **Error handling:** Surface errors to the user unless there is a clear automatic resolution
+
+## Iteration Over Indexing
+
+Prefer iterating an array directly, or composing built-in iteration
+methods, rather than indexing by position (*prefer iteration over
+indexing*). Index-based loops (`for (let i = 0; i < arr.length; i++) arr[i]`)
+are exactly where off-by-one errors, index-out-of-bounds errors, and
+shape-mismatch bugs (indexing two arrays by one shared counter that
+assumes they're the same length) come from — direct iteration never
+exposes a position to get wrong.
+
+Concretely, prefer:
+
+- `for (const item of arr)` over `for (let i = 0; i < arr.length; i++)`.
+- `arr.map(...)`/`.filter(...)`/`.reduce(...)` over building a result by
+  hand with an index counter.
+- Destructuring in a loop over indexing two arrays by a shared counter —
+  TypeScript has no built-in `zip`, so pair them first (e.g. a small
+  typed `zip` helper, or `.map((x, i) => [x, ys[i]] as const)` only once
+  the lengths are already guaranteed equal) rather than indexing both by
+  `i` and hoping they match.
+- `.entries()` when the position is genuinely needed alongside the value
+  — never a separate counter variable plus `arr[i]`.
+
+Reach for direct indexing only when the algorithm is genuinely
+random-access (e.g. binary search) — not as a default habit for "loop
+over this and also that."
 
 ## Self-Documenting Code
 

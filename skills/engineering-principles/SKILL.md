@@ -40,6 +40,15 @@ because nobody had checked.
 - **Use the project's configured analysis tools rather than bypassing
   them.** If a tool's default is wrong for a specific case, fix the tool's
   config (a scoped override), don't route around the tool.
+- **Prefer iteration over indexing.** Index-based loops — manual position
+  tracking, indexing two collections by one shared counter — are exactly
+  where off-by-one errors, index-out-of-bounds errors, and shape-mismatch
+  bugs (assuming two collections share a length and indexing both by the
+  same counter) come from. Prefer iterating a sequence directly, or
+  composing iterator/iterable primitives (Python's `itertools`,
+  TypeScript's `for...of` and array methods, ...), over manual position
+  arithmetic. Reach for indexing only when the algorithm is genuinely
+  random-access (e.g. binary search).
 
 ## Checking a language skill against these principles
 
