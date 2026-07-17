@@ -16,7 +16,11 @@ states the preference order and fallback behavior.
 - **Prefer semantic/LSP-aware code-navigation tools** (e.g. serena, a
   language server) over raw filesystem tools (`Read`, `Glob`, `Grep`) for
   code analysis and modification, when such a tool is installed and
-  running.
+  running. Text search finds text matches, not references — it misses
+  renamed/shadowed usages and false-positives on comments or strings. The
+  result looks like a normal answer either way, so an incomplete grep-based
+  result doesn't announce itself as wrong; the cost lands later, as a bug
+  from a reference nobody found.
 - **Prefer specialized review-agent plugins** (e.g. `pr-review-toolkit`,
   `coderabbit`) over ad hoc manual review when installed.
 - **Prefer up-to-date library-documentation tools** (e.g. `context7`) over

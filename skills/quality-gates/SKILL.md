@@ -23,7 +23,11 @@ separate rather than compromising between them.
    (see below).
 2. On success it writes a one-time token; a pre-commit hook consumes it and
    blocks the commit if no token is present.
-3. Never bypass the hook with `--no-verify` or equivalent.
+3. Never bypass the hook with `--no-verify` or equivalent. The entire point
+   of the token mechanism is that a commit existing means the checks
+   genuinely ran — bypass it once and every future reader (agent or human)
+   loses the ability to trust that, and has to re-verify from scratch
+   instead of trusting the history.
 
 **Silver gate** — runs before merging to `master`/`main`.
 1. A gate script runs the full check suite: typecheck/lint, the full test
@@ -55,8 +59,21 @@ fixtures — never to preemptively exclude a fast test.
 All work happens on a feature branch (`feature/short-description`); never
 commit directly to `master`/`main`. Bronze gates every feature-branch
 commit; silver gates every commit to `master`/`main`, including merges.
+This keeps `master` always in the state the rest of the contract assumes
+it's in — verified and (for projects that auto-deploy on push) safe to
+ship — so anyone reading or building on `master` doesn't first have to
+check whether *this particular* state happens to be trustworthy.
 
 ## Doc Hygiene: Bronze vs Silver
+
+A stale or inaccurate doc doesn't just look untidy — it costs the next
+reader (agent or human) real tokens and time to work around. A plan whose
+checkboxes lie means someone has to re-derive what's actually done by
+reading the code instead of trusting the plan. A spec left behind after
+its design shipped means someone has to figure out whether it's still
+current or historical before they can rely on it. Deleting/updating
+promptly is cheaper, once, than every future reader re-establishing ground
+truth for themselves.
 
 **Bronze** (manual, per-commit, not scripted, doesn't count against the
 latency budget): any plan file touched by this commit's work must have

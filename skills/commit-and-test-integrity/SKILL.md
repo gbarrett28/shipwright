@@ -8,10 +8,17 @@ description: Use when writing a commit message, when about to delete or change a
 ## Commit Conventions
 
 - Follow Conventional Commits format: `feat:`, `fix:`, `chore:`, `docs:`,
-  `refactor:`, `test:`.
+  `refactor:`, `test:`. A consistently-typed history is scannable —
+  `git log --grep '^feat'` or a changelog generator can answer "what
+  shipped" without anyone reading every diff.
 - Write clear, descriptive commit messages focused on *why*, not *what*.
+  The diff already shows *what* changed; a message that just re-describes
+  it adds nothing a reader couldn't get faster from `git show`. The *why*
+  is the only thing that isn't already in the diff.
 - **Always confirm before deleting or changing anything that is not
-  committed to git.**
+  committed to git.** Committed work can be recovered from history;
+  uncommitted work can't — the cost of asking is one round-trip, the cost
+  of guessing wrong is unrecoverable.
 
 ### AI attribution
 

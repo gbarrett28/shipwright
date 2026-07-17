@@ -97,6 +97,15 @@ When writing an implementation plan, strongly prefer breaking it into
 sprints of at most ~3 hours of inline execution each. Sprints are separate
 plan files, each producing working, independently-testable software.
 
+Two reasons, not one: running out of context mid-task forces an expensive
+recovery (re-reading state to figure out where things stood before
+continuing — tokens spent reconstructing, not building), and a ~3-hour
+checkpoint gives a human partner something concrete to look at and react
+to. The context-exhaustion risk may be less severe on current tooling than
+it once was, but the checkpoint-visibility benefit holds regardless — ~3
+hours has empirically been a size where progress stays visible without
+constant check-ins.
+
 - If a spec covers multiple independent subsystems, each subsystem is its
   own sprint.
 - If a single subsystem exceeds ~3 hours, break it at a natural integration
@@ -112,6 +121,11 @@ single sprint is fine.
 
 Do not use git worktrees for interactive feature work — not all tools work
 correctly inside them. Use a feature branch in the main working directory
-instead. (This doesn't apply to isolation mechanisms your harness manages
-itself, e.g. background-job worktree isolation — that's a runtime concern,
-not a project workflow choice.)
+instead. Concretely, not hypothetically: a fresh worktree doesn't get
+gitignored/untracked content the main checkout has (installed dependencies
+like `node_modules` or a venv, and any real local fixture data), so tools
+that assume either one fail inside a worktree in ways that look like a
+code bug but are actually a missing-file problem. (This doesn't apply to
+isolation mechanisms your harness manages itself, e.g. background-job
+worktree isolation — that's a runtime concern, not a project workflow
+choice.)

@@ -154,6 +154,27 @@ not just history:
    the agent checked proactively. That's documented verbatim in the skill
    itself as the concrete example the rule exists to prevent.
 
+## A note on motivation
+
+A rule stated without its reason is a rule a future reader can't evaluate
+— they can follow it or violate it, but they can't judge whether it
+applies to their specific situation, because they don't know what it's
+actually protecting against. Several rules across this repo were asserted
+("do X") without stating *why* X, discovered by explicitly auditing every
+skill against the question rather than assuming existing wording already
+covered it. Two examples worth recording because the same shape recurs
+elsewhere: doc/issue hygiene rules exist because a stale or inaccurate
+record costs the *next* reader (agent or human) real tokens to
+reconstruct ground truth from scratch, and Plan Sprint Size's ~3-hour
+chunking exists partly because losing context mid-task forces an
+expensive recovery, and partly — independent of that, and worth keeping
+even if the first reason turns out to matter less on current tooling —
+because a ~3-hour checkpoint is a size where a human partner can still see
+and react to progress. Both were fixed directly in the relevant skills
+rather than just noted here; this section records the *pattern* (check
+whether a rule states its reason, don't assume it does), not a duplicate
+of the content itself.
+
 ## Versioning
 
 `version` in `.claude-plugin/plugin.json` and the matching entry in
@@ -167,8 +188,11 @@ superpowers required-invocation table and a missing doc-convention row),
 from mandatory to project-configurable, wording clarifications across
 `quality-gates`/`python-guidelines`), `0.6.0` for the new
 `engineering-principles` skill plus the TypeScript gap it found (tooling
-and suppression-discipline rules added to `typescript-guidelines`).
-Consuming projects pin to the
+and suppression-discipline rules added to `typescript-guidelines`),
+`0.6.1` for a motivation audit — several rules across the repo asserted
+*what* to do without stating *why*, found by asking that question
+explicitly rather than assuming existing wording was complete (see
+"A note on motivation" below). Consuming projects pin to the
 marketplace, not a
 specific version, so a real behavior change without a version bump is
 invisible to them — every skill addition gets at least a minor bump.

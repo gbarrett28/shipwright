@@ -16,7 +16,9 @@ reach it; this skill states the policy.
 
 - **Search before creating.** Check for an existing open (or recently
   closed) issue covering the same problem before filing a new one, to avoid
-  duplicates accumulating over time.
+  duplicates accumulating over time. Every duplicate is a future cost paid
+  more than once: the next person to search pays it in triage time, and if
+  work happens on both independently, it's paid again in wasted effort.
 - **Link work to issues.** When a commit or PR resolves an issue, reference
   it using the tracker's linking convention (e.g. GitHub's `Closes #123` /
   `Fixes #123` keywords) so closure is automatic and traceable, rather than
@@ -32,7 +34,9 @@ reach it; this skill states the policy.
 - **Don't file an issue for something being fixed in the same session.**
   Issues track work that isn't actionable *right now*; filing one for a bug
   you're about to fix in the current change is process theater, not
-  hygiene.
+  hygiene — it costs the create-link-close overhead for an issue nobody
+  will ever need to find, since the fix and the record of it (the commit)
+  already exist together.
 - **Close only when the observable behavior is fixed, not when a suspected
   cause changed.** "I refactored the thing that seemed responsible" is not
   the same claim as "the bug is gone" — verify the user-facing symptom
