@@ -85,11 +85,17 @@ first.
 
 Prefer the approach that achieves the final result with the fewest total
 tokens: avoid redundant reads, unnecessary exploration, and verbose output
-where concise output suffices. When choosing a plan execution mode, prefer
-inline execution (`superpowers:executing-plans`) over subagent-driven
-execution — it uses fewer total tokens. Never offer the visual-companion
-feature during brainstorming; if a visual is genuinely needed, use whatever
-direct tool the project provides for that purpose instead.
+where concise output suffices. Token count, not wall-clock time, is the
+scarce resource to optimize for — a context window is exhausted by total
+tokens spent, regardless of how quickly or slowly those tokens are
+produced, so a slower-but-cheaper approach always beats a
+faster-but-more-expensive one. When choosing a plan execution mode,
+prefer inline execution (`superpowers:executing-plans`) over
+subagent-driven execution — it uses fewer total tokens, even though
+dispatching parallel subagents can finish sooner in wall-clock time.
+Never offer the visual-companion feature during brainstorming; if a
+visual is genuinely needed, use whatever direct tool the project
+provides for that purpose instead.
 
 ## Plan Sprint Size
 
