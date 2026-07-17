@@ -1,0 +1,20 @@
+{
+  "name": "shipwright",
+  "description": "Reusable engineering-methodology skills: quality gates, commit/issue/doc hygiene, tool preferences, and language guidelines.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Geoff Barrett",
+    "email": "gbarrett28@gmail.com"
+  },
+  "homepage": "https://github.com/gbarrett28/shipwright",
+  "repository": "https://github.com/gbarrett28/shipwright",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "quality-gates",
+    "tdd",
+    "commit-conventions",
+    "code-review",
+    "workflows"
+  ]
+}
