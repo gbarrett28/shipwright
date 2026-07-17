@@ -1,6 +1,6 @@
 ---
 name: python-guidelines
-description: Use before writing or reviewing Python code — covers strict ruff/mypy linting rules, the no-inline-noqa/type-ignore policy (use per-file-ignores or stubs instead), and the safe-then-unsafe auto-fix workflow.
+description: Use before writing or reviewing Python code — covers strict ruff/mypy linting rules, the no-inline-noqa/type-ignore policy (use per-file-ignores or stubs instead), the safe-then-unsafe auto-fix workflow, and preferring iteration/itertools over index-based array access.
 ---
 
 # Python Coding Guidelines
@@ -55,6 +55,33 @@ git diff                         # review every change before git add
 The `--unsafe-fixes` flag enables transforms that could alter runtime behaviour
 (e.g. `try/except/pass` → `contextlib.suppress`, nested `if` → single `and`).
 They are often correct but must be verified in context.
+
+## Iteration Over Indexing
+
+Prefer iterating directly over a sequence, or composing iterators via
+`itertools`, rather than indexing into arrays/lists by position.
+Index-based loops (`for i in range(len(x)): x[i]`) are exactly where
+off-by-one errors, index-out-of-bounds errors, and shape-mismatch bugs
+(assuming two sequences share a length and indexing both with one shared
+index) come from — an iterator can't be indexed out of bounds because it
+never exposes a position to get wrong.
+
+Concretely, prefer:
+
+- `for item in seq:` over `for i in range(len(seq)): seq[i]`.
+- `for a, b in zip(xs, ys):` over `for i in range(len(xs)): xs[i], ys[i]`
+  — `zip` (or `itertools.zip_longest` when lengths may genuinely differ
+  on purpose) makes a length mismatch impossible to get wrong instead of
+  asserting the lengths match and then indexing both by hand.
+- `itertools.pairwise(seq)` over `for i in range(len(seq) - 1): seq[i], seq[i + 1]`.
+- `enumerate(seq)` when the position is genuinely needed alongside the
+  value — never `range(len(seq))` plus a separate `seq[i]` lookup.
+- `itertools.combinations(seq, 2)` over nested `range(len(...))` loops
+  with an `i == j` skip when comparing every pair of elements.
+
+Reach for direct indexing only when the algorithm is genuinely
+random-access (e.g. binary search) — not as a default habit for "loop
+over this and also that."
 
 ## Per-File Ignores
 
