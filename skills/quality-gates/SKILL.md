@@ -54,6 +54,36 @@ not a blanket default. If bronze's runtime approaches the budget's ceiling
 as the suite grows, that's a signal to tag genuinely slow tests or optimize
 fixtures — never to preemptively exclude a fast test.
 
+## Detecting Missing Test Coverage
+
+"New tests belong in bronze" assumes a test was written at all — it says
+nothing about *noticing* when one wasn't. A bronze gate that only re-runs
+the existing suite can't distinguish a bugfix that added a regression test
+from one that didn't; both look identical to the test run passing. A real
+fix shipped with zero new coverage is exactly the change most likely to
+regress silently later, since nothing but a fresh manual investigation
+would ever catch it again — and it's also the likeliest moment for the
+gap to appear: a fix found via deep debugging (external harness, real
+data, production logs) can feel "verified enough" without a fast, isolated
+unit test ever getting written, especially under the momentum of a long
+investigation.
+
+Bronze gate scripts SHOULD add a lightweight check for this, mirroring the
+doc-hygiene confirmation step already used for plan/spec files: diff the
+staged (or commit-range) files, and if source files changed with no
+corresponding test file changed, prompt for confirmation before issuing
+the gate token ("no new test coverage detected for this change — proceed
+anyway?") rather than silently letting it through. This doesn't replace
+`superpowers:test-driven-development` — TDD is still the mechanism that
+produces the test in the first place; this check is the safety net for
+when that discipline lapses, which is precisely when external verification
+against real data made the fix feel done without it.
+
+A confirmed manual override is fine — some commits genuinely have no
+testable surface (pure docs, config, generated files). A *silent* pass
+with no new coverage and no override is the failure mode this check
+exists to close.
+
 ## Branch Workflow
 
 All work happens on a feature branch (`feature/short-description`); never

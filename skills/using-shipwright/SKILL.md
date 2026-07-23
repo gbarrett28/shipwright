@@ -39,6 +39,24 @@ And these moments require invoking a `shipwright` skill:
 | `shipwright:python-guidelines` | Before writing or reviewing Python code. |
 | `shipwright:typescript-guidelines` | Before writing or reviewing TypeScript code. |
 
+## Re-invoking Within a Long Session
+
+A single conversation often investigates several distinct problems in
+sequence — that's normal, not a sign the process broke down. Each
+*genuinely new* root-cause hypothesis (a different bug, a different
+symptom, a different subsystem) requires its own fresh pass through
+`superpowers:systematic-debugging` — Phase 1 through 4, and the
+announcement — even when the skill was already invoked earlier in the
+same session for a different bug.
+
+"I'm already in debugging mode" is not the same claim as "I've
+root-caused *this* symptom." The first is a session mood that can persist
+for hours; the second is the specific work the skill exists to force,
+one hypothesis at a time. An earlier invocation proves the discipline was
+followed for the bug that motivated it — it says nothing about the next
+one. Don't let it stand in as implicit cover for a new investigation that
+hasn't had its own Phase 1 yet.
+
 ## Check Before You Build
 
 Before starting non-trivial work — a new feature, a new file, a new
