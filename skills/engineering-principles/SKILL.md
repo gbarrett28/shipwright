@@ -49,6 +49,20 @@ because nobody had checked.
   TypeScript's `for...of` and array methods, ...), over manual position
   arithmetic. Reach for indexing only when the algorithm is genuinely
   random-access (e.g. binary search).
+- **Before guarding against a crash, confirm it's reachable in
+  production, not just through a test double.** When a fix is discovered
+  via a failing test, trace whether the triggering input shape can occur
+  through a real code path, or only through how a mock/stub/fixture
+  happens to construct its input. A defensive check added for a shape
+  that can't occur outside test doubles is dead code at best — and at
+  worst hides the real bug (an unrealistic test double) behind an
+  unreachable guard, so a genuine future regression of the same shape
+  gets silently swallowed instead of failing loudly. Fix the test double
+  to produce a realistic shape instead of adding production-side
+  tolerance for a shape production never produces. This sharpens
+  "prefer static guarantees over runtime checks" above: a runtime check
+  guarding an impossible-in-production case isn't a weaker version of a
+  static guarantee, it's a check with no real precondition to guard.
 
 ## Checking a language skill against these principles
 
